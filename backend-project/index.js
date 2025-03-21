@@ -1,23 +1,42 @@
-const express = require('express'); 
-const cors = require('cors'); // Allows frontend to access backend
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv').config();
+
 const app = express();
 
 // Middleware
-app.use(cors()); // Enable CORS (Important for frontend communication)
-app.use(express.json()); // Enable JSON parsing
+app.use(cors());
+app.use(express.json());
 
-// Sample API Endpoint
-app.get('/api/data', (req, res) => {
-  res.json({ message: 'Hello from the backend,hope we are connected now', data: [1, 2, 3, 4] });
+// Connect to MongoDB
+mongoose.connect('mongodb://localhost:27017/yourDatabase')
+  .then(() => console.log('✅ Connected to MongoDB'))
+  .catch(err => console.error('❌ MongoDB connection error:', err));
+
+// Define a Model (Example: Users)
+const UserSchema = new mongoose.Schema({
+  name: String,
+  email: String
+});
+const User = mongoose.model('User', UserSchema);
+
+// API Endpoints
+app.post('/api/users', async (req, res) => {
+  const newUser = new User(req.body);
+  await newUser.save();
+  res.json({ message: "User added!", user: newUser });
 });
 
-// Default Route
+app.get('/api/users', async (req, res) => {
+  const users = await User.find();
+  res.json(users);
+});
 app.get('/', (req, res) => {
-  res.send('Hello, Backend is Running!');
+  res.send('Hello, Backend is Running! 🚀');
 });
 
-// Define the port (use 5000 to match your frontend configuration)
+
+// Start Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Backend running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
