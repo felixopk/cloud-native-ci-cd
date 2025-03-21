@@ -3,13 +3,14 @@ import './App.css';
 
 function App() {
   const [backendData, setBackendData] = useState(null);
+  const backendUrl = process.env.REACT_APP_BACKEND_URL; // Read from .env
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/data') // Ensure this URL matches your backend
+    fetch(`${backendUrl}/api/data`)
       .then((response) => response.json())
       .then((data) => setBackendData(data))
       .catch((error) => console.error('Error fetching data:', error));
-  }, []);
+  }, [backendUrl]);
 
   return (
     <div className="App">
@@ -22,7 +23,6 @@ function App() {
           </div>
         ) : (
           <p>Loading data from backend...</p>
-          
         )}
       </header>
     </div>

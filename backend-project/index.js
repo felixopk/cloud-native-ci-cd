@@ -8,7 +8,7 @@ app.use(express.json()); // Enable JSON parsing
 
 // Sample API Endpoint
 app.get('/api/data', (req, res) => {
-  res.json({ message: 'Hello from the backend!', data: [1, 2, 3, 4] });
+  res.json({ message: 'Hello from the backend,hope we are connected now', data: [1, 2, 3, 4] });
 });
 
 // Default Route
