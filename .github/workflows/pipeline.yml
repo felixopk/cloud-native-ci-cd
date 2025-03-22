@@ -1,26 +1,24 @@
-name : CI-CD PIPELINE
-on :
+name: CI/CD Pipeline
+
+on:
   push:
     branches:
-      - main:
-      - development:
+      - development  # Change this to 'dev' if you want to test in another branch
+
 jobs:
   build:
-    runs-on: Ubuntu-latest:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code:
-        uses: actions/checkout@v3:
-        
-      - name: Install Dependencies:
-        run: npm install:
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-      - name: Run Test:
-        run: npm run test:
-        
-       - name: Deploy
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Tests
+        run: npm test
+
+      - name: Deploy
         run: echo "Deploying..."
 
-
-
-    
 
