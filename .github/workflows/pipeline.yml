@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - development  # Change this to 'dev' if you want to test in another branch
+      - development  # Change this if needed
 
 jobs:
   build:
@@ -12,13 +12,24 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Install Dependencies
+      - name: Debug - List Files
+        run: ls -R
+
+      - name: Install Backend Dependencies
+        working-directory: backend-project
         run: npm install
 
-      - name: Run Tests
+      - name: Install Frontend Dependencies
+        working-directory: frontend-project
+        run: npm install
+
+      - name: Run Backend Tests
+        working-directory: backend-project
+        run: npm test
+
+      - name: Run Frontend Tests
+        working-directory: frontend-project
         run: npm test
 
       - name: Deploy
         run: echo "Deploying..."
-
-
