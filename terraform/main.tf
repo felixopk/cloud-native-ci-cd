@@ -183,6 +183,21 @@ resource "aws_eks_cluster" "eks" {
     subnet_ids = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet_2.id]
   }
 }
+resource "aws_iam_role" "eks_worker_role" {
+  name = "eks-worker-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      }
+      Action = "sts:AssumeRole"
+    }]
+  })
+}
+
 
 # ✅ Worker Node Group
 resource "aws_eks_node_group" "worker_nodes" {
