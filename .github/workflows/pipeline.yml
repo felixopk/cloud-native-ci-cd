@@ -1,1 +1,26 @@
+name : CI-CD PIPELINE
+on :
+  push:
+    branches:
+      - main:
+      - development:
+jobs:
+  build:
+    runs-on: ubuntu-latest:
+    steps:
+      - name: Checkout code:
+        uses: actions/checkout@v3:
+        
+      - name: Install Dependencies:
+        run: npm install:
+
+      - name: Run Test:
+        run: npm run test:
+        
+       - name: Deploy
+        run: echo "Deploying..."
+
+
+
+    
 
