@@ -24,8 +24,8 @@ resource "kubernetes_deployment" "frontend" {
 
       spec {
         container {
-          image = "felixopk101/my-frontend-app:v1"
           name  = "frontend-container"
+          image = "felixopk101/frontend-app:v2" # Ensure this is accessible
 
           port {
             container_port = 80

@@ -24,10 +24,21 @@ resource "kubernetes_deployment" "backend" {
 
       spec {
         container {
-          image = "felixopk101/backend"
           name  = "backend-container"
+          image = "felixopk101/backend:v2" # Ensure this image exists
+
           port {
             container_port = 5000
+          }
+
+          env {
+            name  = "MONGO_URI"
+            value = "mongodb://mongo-service:27017/mydatabase" # Update with your DB service name
+          }
+
+          env {
+            name  = "PORT"
+            value = "5000"
           }
         }
       }

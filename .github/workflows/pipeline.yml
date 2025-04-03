@@ -1,26 +1,35 @@
-name : CI-CD PIPELINE
-on :
+name: CI/CD Pipeline
+
+on:
   push:
     branches:
-      - main:
-      - development:
+      - development  # Change this if needed
+
 jobs:
   build:
-    runs-on: ubuntu-latest:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code:
-        uses: actions/checkout@v3:
-        
-      - name: Install Dependencies:
-        run: npm install:
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-      - name: Run Test:
-        run: npm run test:
-        
-       - name: Deploy
+      - name: Debug - List Files
+        run: ls -R
+
+      - name: Install Backend Dependencies
+        working-directory: backend-project
+        run: npm install
+
+      - name: Install Frontend Dependencies
+        working-directory: frontend-project
+        run: npm install
+
+      - name: Run Backend Tests
+        working-directory: backend-project
+        run: npm test
+
+      - name: Run Frontend Tests
+        working-directory: frontend-project
+        run: npm test
+
+      - name: Deploy
         run: echo "Deploying..."
-
-
-
-    
-
