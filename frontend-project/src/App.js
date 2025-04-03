@@ -20,10 +20,13 @@ function App() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email })
     });
-    const data = await response.json();
-    setUsers([...users, data.user]);
-    setName('');
-    setEmail('');
+
+    if (response.ok) {
+      const data = await response.json();
+      setUsers(prevUsers => [...prevUsers, data.user]); // Use previous state
+      setName('');
+      setEmail('');
+    }
   };
 
   return (
@@ -46,6 +49,20 @@ function App() {
         />
         <button type="submit">Add User</button>
       </form>
+
+      {/* Displaying users */}
+      <h2>Users List</h2>
+      <ul>
+        {users.length > 0 ? (
+          users.map((user, index) => (
+            <li key={index}>
+              <strong>{user.name}</strong> - {user.email}
+            </li>
+          ))
+        ) : (
+          <p>No users found</p>
+        )}
+      </ul>
     </div>
   );
 }
