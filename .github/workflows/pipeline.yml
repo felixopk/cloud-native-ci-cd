@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - development  # Change this if needed
+      - main
 
 jobs:
   build:
