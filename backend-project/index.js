@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/yourDatabase')
+mongoose.connect(process.env.MONGO_CONN_STR)
   .then(() => console.log('✅ Connected to MongoDB'))
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
@@ -32,7 +32,7 @@ app.get('/api/users', async (req, res) => {
   const users = await User.find();
   res.json(users);
 });
-app.get('/', (req, res) => {
+app.get('/ok', (req, res) => {
   res.send('Hello, Backend is Running! 🚀');
 });
 
