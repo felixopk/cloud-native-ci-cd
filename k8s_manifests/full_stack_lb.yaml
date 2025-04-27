@@ -11,6 +11,7 @@ metadata:
     #Uncommnt below to enable https, generate certificate from AWS ACM
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:730335186130:certificate/4571279f-83a8-4c2f-b015-14ce17918506
+    alb.ingress.kubernetes.io/healthcheck-path: /ok 
 spec:
   ingressClassName: alb
   rules:
@@ -23,14 +24,14 @@ spec:
               service:
                 name: api
                 port:
-                  number: 8080
+                  number: 5000
           - path: /v2/api
             pathType: Prefix
             backend:
               service:
                 name: apiv2
                 port:
-                  number: 8080
+                  number: 5000
           - path: /
             pathType: Prefix
             backend:

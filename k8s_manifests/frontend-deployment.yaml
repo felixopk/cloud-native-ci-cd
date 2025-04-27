@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: felixopk101/frontend:v1
+        image: felixopk101/frontend:v6
         imagePullPolicy: Always
         env:
           - name: REACT_APP_BACKEND_URL

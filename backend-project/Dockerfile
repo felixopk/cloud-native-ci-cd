@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 5000
 
 # Start the backend server
-CMD ["node", "server.js"]  # Change this if your entry file is different
+CMD node index.js  # Change this if your entry file is different
