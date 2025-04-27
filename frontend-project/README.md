@@ -256,4 +256,128 @@ kubectl delete -f -f
 cd terraform
 terraform destroy --auto-approve
 ```
+# Fullstack Kubernetes Project - React + Node.js + MongoDB on AWS EKS
+
+This project demonstrates a fullstack application deployed on Kubernetes (EKS on AWS).  
+It consists of:
+- Frontend: React
+- Backend: Node.js + Express
+- Database: MongoDB
+- Infrastructure: AWS EKS, ALB (Application Load Balancer), Terraform, and Kubernetes manifests
+
+---
+
+## ⚙️ Tech Stack
+- Frontend: React.js
+- Backend: Node.js, Express.js, Mongoose
+- Database: MongoDB
+- Containerization: Docker
+- Orchestration: Kubernetes (AWS EKS)
+- Load Balancer: AWS ALB Ingress Controller
+- Infrastructure Provisioning: Terraform
+
+---
+
+## 🏗️ Setup and Deployment Overview
+
+1. **Build Docker Images** for backend and frontend.
+2. **Push Images** to a container registry (like DockerHub or ECR).
+3. **Deploy** MongoDB, Backend, and Frontend to EKS using Kubernetes manifests.
+4. **Expose Services** internally and externally.
+5. **Set up an Ingress** using AWS ALB Ingress Controller.
+6. **Access Application** via a custom domain (`app.opkcloudz.com`) with HTTPS enabled.
+
+---
+
+## 🚀 Deployment Commands (Quick Reference)
+
+- Initialize Terraform:
+  ```bash
+  terraform init
+
+Apply Terraform to provision AWS infrastructure:
+terraform apply
+docker build -t your-frontend-image .
+docker build -t your-backend-image .
+
+Push Docker images:
+docker push your-frontend-image
+docker push your-backend-image
+
+Apply Kubernetes manifests:
+kubectl apply -f k8s/mongodb-deployment.yaml
+kubectl apply -f k8s/backend-deployment.yaml
+kubectl apply -f k8s/frontend-deployment.yaml
+kubectl apply -f k8s/ingress.yaml
+
+Verify deployments:
+kubectl get pods
+kubectl get services
+kubectl get ingress
+ 
+ 🛠️Challenges Faced
+ 1. CrashLoopBackOff for Backend Pod
+Cause: MongoDB connection issues because the database service was not reachable or environment variables were misconfigured.
+
+Solution:
+
+Verified MongoDB service name in Kubernetes YAML.
+
+Ensured MONGO_CONN_STR was correctly set.
+
+Added readiness/liveness probes for smoother startup.
+
+2. 502 Bad Gateway from ALB
+Cause:
+
+Backend readiness issue: ALB health checks failed.
+
+Incorrect health check paths.
+
+Frontend expecting backend on wrong URL.
+
+Solution:
+
+Added a /ok health check endpoint to the backend.
+
+Set the ALB health check annotation to /ok.
+
+Confirmed ports matched between Service and Deployment.
+
+3. Build Time Delays
+Cause:
+
+Multi-stage Dockerfile copying and building both frontend and backend.
+
+Initial builds always take longer to fetch all npm packages.
+
+Solution:
+
+Used efficient .dockerignore files to avoid copying unnecessary files.
+
+Separated backend and frontend into individual images to optimize build times.
+
+Used node:alpine and lightweight base images.
+
+Ingress Misconfigurations
+Cause:
+
+Wrong service names and ports in Ingress rules.
+
+Missing backend pods leading to no endpoints.
+
+Solution:
+
+Ensured services are correctly named.
+
+Matched Service port and Deployment containerPort.
+
+Made sure pods were up and running before applying the Ingress.
+
+📈 Learnings
+
+
+
+
+
 
