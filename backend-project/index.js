@@ -32,11 +32,21 @@ app.get('/api/users', async (req, res) => {
   const users = await User.find();
   res.json(users);
 });
-app.get('/ok', (req, res) => {
-  res.send('Hello, Backend is Running! 🚀');
+
+// Example task endpoint
+app.get('/api/tasks', (req, res) => {
+  res.json([
+    { id: 1, title: 'Learn Kubernetes' },
+    { id: 2, title: 'Fix 502 Gateway error' },
+    { id: 3, title: 'Deploy Fullstack App' }
+  ]);
 });
 
+// ✅ Healthcheck endpoint
+app.get('/ok', (req, res) => {
+  res.send('ok');
+});
 
 // Start Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`Backend running on port ${PORT}`));

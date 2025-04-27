@@ -1,25 +1,27 @@
-# Use Node.js as the base image
-FROM node:18
+# Step 1: Build the React app
+FROM node:18 AS builder
 
-# Set the working directory
 WORKDIR /app
 
-# Copy package.json and install dependencies
 COPY package.json package-lock.json ./
 RUN npm install
 
-# Copy the rest of the app
 COPY . .
-
-# Build the React app
 RUN npm run build
 
-# Serve the app using Nginx
-FROM nginx:alpine
-COPY --from=0 /app/build /usr/share/nginx/html
+# Step 2: Serve the app using a tiny Node.js server
+FROM node:18-slim
 
-# Expose port 80
-EXPOSE 80
+# Only copy the build output and install 'serve'
+WORKDIR /app
 
-CMD ["nginx", "-g", "daemon off;"]
+RUN npm install -g serve
 
+# Copy only the build folder from the builder stage
+COPY --from=builder /app/build ./build
+
+# Expose port 3000 inside container
+EXPOSE 3000
+
+# Command to run the app
+CMD ["serve", "-s", "build", "-l", "3000"]

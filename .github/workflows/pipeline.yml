@@ -1,36 +1,68 @@
-name: CI/CD Pipeline
+name: DevSecOps Build and Deploy to EKS
 
 on:
   push:
     branches:
-      - development  # Change this if needed
       - main
 
 jobs:
-  build:
+  devsecops-build-and-deploy:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [api, frontend]
+
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Debug - List Files
-        run: ls -R
+    # === 1. Lint Code (Optional but good practice) ===
+    - name: Lint JavaScript/Node Code
+      run: |
+        npm install eslint --location=global
+        eslint ./${{ matrix.service }} --ext .js,.jsx,.ts,.tsx || true
 
-      - name: Install Backend Dependencies
-        working-directory: backend-project
-        run: npm install
+    # === 2. Run Security Scan with Trivy ===
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@v0.11.2
+      with:
+        scan-type: filesystem
+        scan-ref: ./${{ matrix.service }}
+        severity: CRITICAL,HIGH
+        ignore-unfixed: true
 
-      - name: Install Frontend Dependencies
-        working-directory: frontend-project
-        run: npm install
+    # === 3. Setup Docker and Login ===
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
 
-      - name: Run Backend Tests
-        working-directory: backend-project
-        run: npm test
+    - name: Login to DockerHub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Run Frontend Tests
-        working-directory: frontend-project
-        run: npm test
+    # === 4. Build and Push Image ===
+    - name: Build and Push Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./${{ matrix.service }}
+        file: ./${{ matrix.service }}/Dockerfile
+        push: true
+        tags: felixopk101/${{ matrix.service }}:latest
 
-      - name: Deploy
-        run: echo "Deploying..."
+    # === 5. Configure AWS Credentials ===
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-2
+
+    # === 6. Update Kubernetes Deployment ===
+    - name: Update kubeconfig
+      run: |
+        aws eks update-kubeconfig --name my-eks-cluster --region us-west-2
+
+    - name: Update Kubernetes deployment image
+      run: |
+        kubectl set image deployment/${{ matrix.service }} ${{ matrix.service }}=felixopk101/${{ matrix.service }}:latest

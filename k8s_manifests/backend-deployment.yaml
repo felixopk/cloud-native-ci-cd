@@ -1,3 +1,4 @@
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,8 +23,8 @@ spec:
         role: api
     spec:
       containers:
-      - name: api
-        image: felixopk101/backend:v1
+      - name: api    
+        image: felixopk101/backend:v7
         imagePullPolicy: Always
         env:
           - name: MONGO_CONN_STR
