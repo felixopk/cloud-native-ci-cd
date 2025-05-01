@@ -278,7 +278,7 @@ It consists of:
 
 ---
 
-## 🏗️ Setup and Deployment Overview
+## 🏗️ Setup and Deployment Overview.
 
 1. **Build Docker Images** for backend and frontend.
 2. **Push Images** to a container registry (like DockerHub or ECR).
