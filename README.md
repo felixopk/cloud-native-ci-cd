@@ -374,7 +374,7 @@ Matched Service port and Deployment containerPort.
 
 Made sure pods were up and running before applying the Ingress.
 
-📈 Learnings
+
 
 
 
