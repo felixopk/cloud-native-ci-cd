@@ -71,4 +71,4 @@ jobs:
 
       - name: Update Kubernetes deployment image
         run: |
-          kubectl set image deployment/${{ matrix.service }} ${{ matrix.service }}=felixopk101/${{ matrix.service }}:latest
+           kubectl set image deployment/api api=felixopk101/${{ matrix.service }}:latest -n workshop
